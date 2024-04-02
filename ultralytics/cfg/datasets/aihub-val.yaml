@@ -1,0 +1,124 @@
+# Ultralytics YOLO 🚀, AGPL-3.0 license
+# AIHub 멀티센서 동선 추적 데이터 sample dataset
+# Documentation: https://docs.ultralytics.com/datasets/detect/coco8/
+# Example usage: yolo train data=coco8.yaml
+# ultralytics
+# datasets  ← dataset_dir
+# └── aihub
+#     └── sample  ← downloads here (1.7 G)
+#         ├── 라벨링데이터 (60 M)
+#         ├── 원천데이터 (407 M)
+#         |   └── RGB  ← raw_dir: videos
+#         ├── frames (1.2 G)  ← out_dir: extract frames here (symbolic src)
+#         |   └── scenario##
+#         |       └── camera##
+#         ├── images  ← symbolic dst
+#         |   └── val
+#         └── data.csv  ← csv_dir
+
+
+# Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
+path: "/home/jongphago/project/ultralytics/datasets" # dataset root dir
+train: # train images (relative to 'path')
+val: aihub/2.Validation/images/val # val images (relative to 'path')
+test: # test images (optional)
+
+# 
+csv: "aihub/2.Validation/videos.csv"
+raw: "aihub/2.Validation/원천데이터"
+out: "aihub/2.Validation/frames"
+images: "aihub/2.Validation/images/val"
+
+lbl: "aihub/2.Validation/라벨링데이터"
+cvt: "aihub/2.Validation/converts"
+labels: "aihub/2.Validation/labels/val"
+
+# property
+fps: 1  # 23
+
+# Classes
+names:
+  0: person
+  1: bicycle
+  2: car
+  3: motorcycle
+  4: airplane
+  5: bus
+  6: train
+  7: truck
+  8: boat
+  9: traffic light
+  10: fire hydrant
+  11: stop sign
+  12: parking meter
+  13: bench
+  14: bird
+  15: cat
+  16: dog
+  17: horse
+  18: sheep
+  19: cow
+  20: elephant
+  21: bear
+  22: zebra
+  23: giraffe
+  24: backpack
+  25: umbrella
+  26: handbag
+  27: tie
+  28: suitcase
+  29: frisbee
+  30: skis
+  31: snowboard
+  32: sports ball
+  33: kite
+  34: baseball bat
+  35: baseball glove
+  36: skateboard
+  37: surfboard
+  38: tennis racket
+  39: bottle
+  40: wine glass
+  41: cup
+  42: fork
+  43: knife
+  44: spoon
+  45: bowl
+  46: banana
+  47: apple
+  48: sandwich
+  49: orange
+  50: broccoli
+  51: carrot
+  52: hot dog
+  53: pizza
+  54: donut
+  55: cake
+  56: chair
+  57: couch
+  58: potted plant
+  59: bed
+  60: dining table
+  61: toilet
+  62: tv
+  63: laptop
+  64: mouse
+  65: remote
+  66: keyboard
+  67: cell phone
+  68: microwave
+  69: oven
+  70: toaster
+  71: sink
+  72: refrigerator
+  73: book
+  74: clock
+  75: vase
+  76: scissors
+  77: teddy bear
+  78: hair drier
+  79: toothbrush
+
+# Download script/URL (optional)
+download: https://ultralytics.com/assets/coco8.zip
+url: https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&dataSetSn=620
