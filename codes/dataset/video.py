@@ -12,7 +12,11 @@ import pandas as pd
 from box import Box
 
 from codes.config.pattern import find
-from codes.config.pattern import camera_id_pattern, scenario_id_pattern
+from codes.config.pattern import (
+    camera_id_pattern,
+    scenario_id_pattern,
+    frame_id_pattern_f,
+)
 
 
 class Video:
@@ -22,6 +26,7 @@ class Video:
 
 
 class AIHub(Video):
+    FPS = 23
 
     def __init__(self, video_dir, task, cfg):
         super().__init__(video_dir, task)
@@ -39,7 +44,7 @@ class AIHub(Video):
         self.out = self.path / cfg.out  # ex. aihub/sample/frames
         sub_dir = f"scenario{self.scenario_id}/camera{self.camera_id}"
         self.frames_dir = self.out / sub_dir
-        self.img = self.path / cfg.img  # ex. aihub/sample/images
+        self.img = self.path / cfg.images  # ex. aihub/sample/images
         self.images_dir = self.img / self.task
 
     def extract(self):
@@ -48,6 +53,7 @@ class AIHub(Video):
             [
                 "ffmpeg",
                 *("-i", self.video_dir),
+                *("-start_number", "0"),
                 *("-r", str(self.fps)),
                 f"{self.frames_dir}/s{self.scenario_id}_c{self.camera_id}_f%04d.png",
             ]
@@ -61,8 +67,12 @@ class AIHub(Video):
             root = Path(directory)
             for file_name in file_names:
                 srcs.append(root / file_name)
-        for src in srcs:
-            dst = self.images_dir / src.parts[-1]
+        for src in sorted(srcs):
+            if self.fps == 1:
+                ffmpeg_index = find(frame_id_pattern_f, str(src))
+                new_frame_id = min(int(ffmpeg_index) * self.FPS, 7361)
+                new_file_name = f"s{self.scenario_id}_c{self.camera_id}_f{new_frame_id:04d}.png"
+            dst = self.images_dir / new_file_name
             if not os.path.exists(dst):
                 os.symlink(src, dst)
 
