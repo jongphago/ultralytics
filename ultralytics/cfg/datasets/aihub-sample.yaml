@@ -27,16 +27,17 @@ test: # test images (optional)
 csv: "aihub/sample/videos.csv"
 
 raw: "aihub/sample/원천데이터/RGB"
+low: "aihub/sample/lower"
 out: "aihub/sample/frames"
-images: "aihub/sample/images"
+images: "aihub/sample/images/val"
 
 lbl: "aihub/sample/라벨링데이터"
 cvt: "aihub/sample/converts"
-labels: "aihub/sample/labels"
+labels: "aihub/sample/labels/val"
 
 
 # property
-fps: 1  # 23
+fps: 23  # 23
 
 # Classes
 names:
