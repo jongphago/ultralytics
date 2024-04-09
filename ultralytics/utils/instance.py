@@ -242,8 +242,9 @@ class Instances:
         if not self.normalized:
             return
         self._bboxes.mul(scale=(w, h, w, h))
-        self.segments[..., 0] *= w
-        self.segments[..., 1] *= h
+        if self.segments is not None:
+            self.segments[..., 0] *= w
+            self.segments[..., 1] *= h
         if self.keypoints is not None:
             self.keypoints[..., 0] *= w
             self.keypoints[..., 1] *= h
