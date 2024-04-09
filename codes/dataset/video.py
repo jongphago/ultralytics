@@ -71,8 +71,8 @@ class AIHub(Video):
             if self.fps == 1:
                 ffmpeg_index = find(frame_id_pattern_f, str(src))
                 new_frame_id = min(int(ffmpeg_index) * self.FPS, 7361)
-                new_file_name = f"s{self.scenario_id}_c{self.camera_id}_f{new_frame_id:04d}.png"
-            dst = self.images_dir / new_file_name
+                src = f"s{self.scenario_id}_c{self.camera_id}_f{new_frame_id:04d}.png"
+            dst = self.images_dir / (src.stem + ".png")
             if not os.path.exists(dst):
                 os.symlink(src, dst)
 
