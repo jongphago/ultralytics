@@ -20,20 +20,20 @@
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
 path: "/home/jongphago/project/ultralytics/datasets" # dataset root dir
 train: # train images (relative to 'path')
-val: aihub/sample/images/val # val images (relative to 'path')
+val: aihub/3.Sample/images # val images (relative to 'path')
 test: # test images (optional)
 
 # 
-csv: "aihub/sample/videos.csv"
+csv: "aihub/3.Sample/videos.csv"
 
-raw: "aihub/sample/원천데이터/RGB"
-low: "aihub/sample/lower"
-out: "aihub/sample/frames"
-images: "aihub/sample/images/val"
+raw: "aihub/3.Sample/원천데이터/RGB"
+videos: "aihub/3.Sample/videos"
+frames: "aihub/3.Sample/frames"
+images: "aihub/3.Sample/images"
 
-lbl: "aihub/sample/라벨링데이터"
-cvt: "aihub/sample/converts"
-labels: "aihub/sample/labels/val"
+labeling: "aihub/3.Sample/라벨링데이터"
+converts: "aihub/3.Sample/converts"
+labels: "aihub/3.Sample/labels"
 
 
 # property

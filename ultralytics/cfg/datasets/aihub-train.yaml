@@ -20,19 +20,19 @@
 # Train/val/test sets as 1) dir: path/to/imgs, 2) file: path/to/imgs.txt, or 3) list: [path/to/imgs1, path/to/imgs2, ..]
 path: "/home/jongphago/project/ultralytics/datasets" # dataset root dir
 train: # train images (rkelative to 'path')
-val: aihub/2.Validation/images # val images (relative to 'path')
+val: aihub/1.Training/images # val images (relative to 'path')
 test: # test images (optional)
 
 # 
-csv: "aihub/2.Validation/videos.csv"
-raw: "aihub/2.Validation/원천데이터"
-videos: "aihub/2.Validation/videos"
-frames: "aihub/2.Validation/frames"
-images: "aihub/2.Validation/images"
+csv: "aihub/1.Training/videos.csv"
+raw: "aihub/1.Training/원천데이터"
+videos: "aihub/1.Training/videos"
+frames: "aihub/1.Training/frames"
+images: "aihub/1.Training/images"
 
-labeling: "aihub/2.Validation/라벨링데이터"
-converts: "aihub/2.Validation/converts"
-labels: "aihub/2.Validation/labels"
+labeling: "aihub/1.Training/라벨링데이터"
+converts: "aihub/1.Training/converts"
+labels: "aihub/1.Training/labels"
 
 # property
 fps: 23  # 23
