@@ -41,7 +41,7 @@ class AIHub(Video):
         self.video_dir = (
             self.path / self.raw / self.video_dir
         )  # ex. 시나리오01/카메라07.avi
-        self.out = self.path / cfg.out  # ex. aihub/sample/frames
+        self.out = self.path / cfg.frames  # ex. aihub/sample/frames
         sub_dir = f"scenario{self.scenario_id}/camera{self.camera_id}"
         self.frames_dir = self.out / sub_dir
         self.img = self.path / cfg.images  # ex. aihub/sample/images

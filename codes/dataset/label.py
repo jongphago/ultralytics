@@ -2,6 +2,7 @@ import os
 import re
 import json
 import logging
+import argparse
 from tqdm import tqdm
 from pathlib import Path
 import yaml
@@ -67,7 +68,7 @@ def get_videos(cfg: Box) -> map:
 
 
 def get_json_labels(cfg, sub_dir) -> list[Path]:
-    raw_label_path = Path(cfg.path) / cfg.lbl / sub_dir
+    raw_label_path = Path(cfg.path) / cfg.labeling / sub_dir
     label_paths = []
     for dirs, _, file_names in os.walk(raw_label_path):
         parent = Path(dirs)
@@ -82,7 +83,7 @@ def find(pattern, string):
 
 def raw2cvt(raw, cfg):
     cvt_name = f"{raw.stem}.txt"
-    cvt = Path(cfg.path) / cfg.cvt / row.video_dir / cvt_name
+    cvt = Path(cfg.path) / cfg.converts / row.video_dir / cvt_name
     return cvt
 
 
@@ -95,7 +96,7 @@ def cvt2dst(cvt, cfg, row):
     camera_id = find(camera_id_pattern, str(cvt))
     frame_id = find(frame_id_pattern, str(cvt))
     dst_name = f"s{scenario_id}_c{camera_id}_f{frame_id}.txt"
-    dst = Path(cfg.path) / cfg.labels / row.task / dst_name
+    dst = Path(cfg.path) / cfg.labels / dst_name
     return dst
 
 
@@ -147,6 +148,9 @@ def get_reorder(
         objects.height.where(objects.y > 0, objects.height + objects.y, inplace=True)
         objects.x.where(objects.x > 0, 0, inplace=True)
         objects.y.where(objects.y > 0, 0, inplace=True)
+        # TODO: inplace syntax
+        # objects['y'] = objects.y.where(objects.y > 0, 0)
+         
         # bottom-right 수정
         bottom_right_x = objects.x + objects.width
         bottom_right_y = objects.y + objects.height
@@ -200,8 +204,18 @@ if __name__ == "__main__":
     info = logging.info
     info(os.getcwd())
 
+    # arguments
+    parser = argparse.ArgumentParser(description="extract frames from video")
+    parser.add_argument(
+        "config",
+        type=str,
+        default="aihub-sample",
+        help="config file name (e.g., 'aihub-val')",
+    )
+    args = parser.parse_args()
+
     # Config
-    cfg_yaml_path = "ultralytics/cfg/datasets/aihub-val.yaml"
+    cfg_yaml_path = f"ultralytics/cfg/datasets/{args.config}.yaml"
     cfg: Box = load_config_from_yaml(cfg_yaml_path)
     debug(cfg)
     value_dict = get_value_dict(cfg)
@@ -214,7 +228,7 @@ if __name__ == "__main__":
         json_labels = get_json_labels(cfg, row.video_dir)
         debug(row)
 
-        os.makedirs(Path(cfg.path) / cfg.cvt / row.video_dir, exist_ok=True)
+        os.makedirs(Path(cfg.path) / cfg.converts / row.video_dir, exist_ok=True)
         os.makedirs(Path(cfg.path) / cfg.labels, exist_ok=True)
 
         for index, raw in tqdm(enumerate(json_labels)):
