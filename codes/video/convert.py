@@ -1,32 +1,48 @@
 import os
 import sys
+
 sys.path.append(os.getcwd())
-import subprocess
+import argparse
 from tqdm import tqdm
 from pathlib import Path
+from collections import namedtuple
 import cv2
-import yaml
 import pandas as pd
-from box import Box
-from codes.config.pattern import find
-from codes.config.pattern import scenario_id_pattern, camera_id_pattern
-from codes.config.pattern import s_id_pattern, c_id_pattern, f_id_pattern
+from codes.config import config
 
 
-def avi2mp4(video_path) -> Path:
+def get_convert_path(
+    cfg: dict, row: namedtuple, src_suffix=".avi", dst_suffix=".mp4"
+) -> tuple[Path, Path]:
+    """
+    examples:
+        avi_video, mp4_video = config.get_convert_path(cfg, row)
+    """
+    _avi_video = cfg.path / cfg.raw / row.video_dir
+    avi_video = _avi_video.with_suffix(src_suffix)
+    _mp4_video = cfg.path / cfg.videos / row.video_dir
+    mp4_video = _mp4_video.with_suffix(dst_suffix)
+    assert avi_video.exists(), f"File {avi_video} not exist."
+    return avi_video, mp4_video
+
+
+def avi2mp4(video_path, out_video_path=None, fps=23) -> Path:
     # Capture
     cap = cv2.VideoCapture(video_path.as_posix())
 
     # Properties
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    fps = cap.get(cv2.CAP_PROP_FPS)
-    assert fps == 23
+    # fps = cap.get(cv2.CAP_PROP_FPS)
+    # assert fps == 23
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
     length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
     # Writer
-    out_video_path = video_path.with_suffix(".mp4")
+    if out_video_path is None:
+        out_video_path = video_path.with_suffix(".mp4")
+    if not out_video_path.parent.exists():
+        os.makedirs(out_video_path.parent)
     writer = cv2.VideoWriter(out_video_path.as_posix(), fourcc, fps, (width, height))
 
     # Convert
@@ -39,91 +55,26 @@ def avi2mp4(video_path) -> Path:
     return out_video_path
 
 
-def extract_frames(video_file, output_folder):
-    def get_ids(in_video_path):
-        scenario_id = find(scenario_id_pattern, in_video_path)
-        camera_id = find(camera_id_pattern, in_video_path)
-        return scenario_id, camera_id
-
-    scenario_id, camera_id = get_ids(video_file)
-    # Use ffmpeg to extract frames from the video file
-    command = [
-        "ffmpeg",
-        *("-ss", "00:00:00"),
-        *("-i", video_file),
-        # *("-r", "23"),
-        *("-vf", "select=not(mod(n\,23))"),
-        *("-start_number", "0"),
-        # *("-q", "2"),
-        *("-f", "image2"),
-        *("-vsync", "vfr"),
-        # *("-t", "2"),
-        os.path.join(output_folder, f"s{scenario_id}_c{camera_id}_f%04d.jpg"),
-    ]
-    print(command)
-    subprocess.run(command)
-
-
-def scale_filename(_filename, fps=23):
-    s_id_pattern = r"(?<=s)\d{2}"
-    c_id_pattern = r"(?<=c)\d{2}"
-    f_id_pattern = r"f(\d{4})."
-    scenario_id = find(s_id_pattern, _filename)
-    camera_id = find(c_id_pattern, _filename)
-    frame_id = find(f_id_pattern, _filename)
-    filename = f"s{scenario_id}_c{camera_id}_f{int(frame_id) * fps:04d}.jpg"
-    return filename
-
-
-def get_paths(
-    cfg,
-    row,
-):
-    video_dir = row.video_dir
-    video = cfg.path / cfg.raw / (video_dir + ".avi")
-    frames = cfg.path / cfg.out / video_dir
-    return video, frames
-
-
 if __name__ == "__main__":
-    root = Path("/home/jongphago/project/ultralytics")
-    config_name = "aihub-val"
-    cfg_path = root / f"ultralytics/cfg/datasets/{config_name}.yaml"
-    with open(cfg_path, "r") as file:
-        cfg = Box(yaml.safe_load(file))
-        cfg.path = Path(cfg.path)
+    # arguments
+    parser = argparse.ArgumentParser(description="convert video from target suffix")
+    parser.add_argument(
+        "config",
+        type=str,
+        default="aihub-sample",
+        help="config file name (e.g., 'aihub-val')",
+    )
+    args = parser.parse_args()
 
-    videos_df = pd.read_csv(cfg.path / cfg.csv)
-    if not os.path.exists(cfg.path / cfg.val):
-        os.makedirs(cfg.path / cfg.val)
-    is_link = True
+    # path
+    cfg = config.get_config(args.config)
 
-    for row in videos_df.itertuples():
-        _video, frames = get_paths(cfg, row)
-        assert _video.exists(), "FileExistsError"
+    # loop
+    iters = config.get_iters(cfg)
 
-        # Convert
-        video = _video.with_suffix(".mp4")
-        if not video.exists():
-            print(f"Convert: {_video}")
-            avi2mp4(_video)
-
-        # Extract
-        if not frames.exists():
-            os.makedirs(frames)
-            print(f"Extract: {video}")
-            extract_frames(video.as_posix(), frames.as_posix())
-        if not is_link:
-            continue
-
-        # Link
-        print(f"Link: {cfg.path / cfg.val}")
-        for _dirpath, dirnames, filenames in os.walk(frames):
-            dirpath = Path(_dirpath)
-            for _filename in sorted(filenames):
-                filename = scale_filename(_filename)
-                # os.symlink(root / dirpath / _filename, dst_path / filename)
-                os.symlink(
-                    cfg.path / dirpath / _filename,
-                    cfg.path / cfg.val / filename,
-                )
+    for row in (pbar := tqdm(iters)):
+        pbar.set_description(f"Processing: {row.video_dir}")
+        avi_video, mp4_video = get_convert_path(cfg, row)
+        print(mp4_video)
+        if not mp4_video.exists():
+            avi2mp4(avi_video, mp4_video)
