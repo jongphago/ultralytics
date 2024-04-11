@@ -1,1 +1,1 @@
-yolo val model=yolov8n.pt data=ultralytics/cfg/datasets/aihub-val.yaml
+yolo val model=yolov8n.pt data=ultralytics/cfg/datasets/aihub-val.yaml save_json=True
