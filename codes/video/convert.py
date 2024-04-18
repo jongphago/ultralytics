@@ -3,17 +3,17 @@ import sys
 
 sys.path.append(os.getcwd())
 import argparse
-from tqdm import tqdm
-from pathlib import Path
 from collections import namedtuple
+from pathlib import Path
+
 import cv2
 import pandas as pd
+from tqdm import tqdm
+
 from codes.config import config
 
 
-def get_convert_path(
-    cfg: dict, row: namedtuple, src_suffix=".avi", dst_suffix=".mp4"
-) -> tuple[Path, Path]:
+def get_convert_path(cfg: dict, row: namedtuple, src_suffix=".avi", dst_suffix=".mp4") -> tuple[Path, Path]:
     """
     examples:
         avi_video, mp4_video = config.get_convert_path(cfg, row)

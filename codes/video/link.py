@@ -4,13 +4,14 @@ import sys
 sys.path.append(os.getcwd())
 import argparse
 from pathlib import Path
-from codes.config import config
-from codes.config import pattern
-from codes.config.pattern import s_id_pattern, c_id_pattern, f_id_pattern
+
+from codes.config import config, pattern
+from codes.config.pattern import c_id_pattern, f_id_pattern, s_id_pattern
 
 
 def get_link_path(cfg: dict, dirpath: Path, _filename: str) -> list[Path, Path]:
-    """_summary_
+    """
+    _summary_
 
     Args:
         cfg (dict): _description_
