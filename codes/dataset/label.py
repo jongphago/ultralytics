@@ -1,13 +1,14 @@
-import os
-import re
+import argparse
 import json
 import logging
-import argparse
-from tqdm import tqdm
+import os
+import re
 from pathlib import Path
-import yaml
+
 import pandas as pd
+import yaml
 from box import Box
+from tqdm import tqdm
 
 
 class Label:
@@ -48,7 +49,8 @@ def get_value_dict(cfg: Box) -> dict[str:int]:
 
 
 def get_videos(cfg: Box) -> map:
-    """AI is creating summary for get_videos
+    """
+    AI is creating summary for get_videos.
 
     Args:
         cfg (Box): directory information
@@ -150,7 +152,7 @@ def get_reorder(
         objects.y.where(objects.y > 0, 0, inplace=True)
         # TODO: inplace syntax
         # objects['y'] = objects.y.where(objects.y > 0, 0)
-         
+
         # bottom-right 수정
         bottom_right_x = objects.x + objects.width
         bottom_right_y = objects.y + objects.height
@@ -177,11 +179,7 @@ def get_reorder(
 
     if objects is None:
         return None
-    class_col = (
-        objects[["label"]]
-        .apply(lambda x: value_dict[x[0]], axis=1)
-        .to_frame(name="class")
-    )
+    class_col = objects[["label"]].apply(lambda x: value_dict[x[0]], axis=1).to_frame(name="class")
     ccwh = xywh2ccwh(objects)
     joined = class_col.join(ccwh)
     reorder = joined[["class", "x", "y", "width", "height"]]

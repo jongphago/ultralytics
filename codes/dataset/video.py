@@ -7,15 +7,15 @@ import argparse
 import subprocess
 from pathlib import Path
 
-import yaml
 import pandas as pd
+import yaml
 from box import Box
 
-from codes.config.pattern import find
 from codes.config.pattern import (
     camera_id_pattern,
-    scenario_id_pattern,
+    find,
     frame_id_pattern_f,
+    scenario_id_pattern,
 )
 
 
@@ -38,9 +38,7 @@ class AIHub(Video):
     def dirs(self, cfg):
         self.path = Path(cfg.path)
         self.raw = self.path / cfg.raw  # ex. aihub/sample/원천데이터/RGB
-        self.video_dir = (
-            self.path / self.raw / self.video_dir
-        )  # ex. 시나리오01/카메라07.avi
+        self.video_dir = self.path / self.raw / self.video_dir  # ex. 시나리오01/카메라07.avi
         self.out = self.path / cfg.frames  # ex. aihub/sample/frames
         sub_dir = f"scenario{self.scenario_id}/camera{self.camera_id}"
         self.frames_dir = self.out / sub_dir

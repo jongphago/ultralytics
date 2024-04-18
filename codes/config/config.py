@@ -1,12 +1,14 @@
 import os
 from pathlib import Path
+
+import pandas as pd
 import yaml
 from box import Box
-import pandas as pd
 
 
 def get_config(config_name):
-    """_summary_
+    """
+    _summary_
 
     Args:
         config_name (_type_): _description_

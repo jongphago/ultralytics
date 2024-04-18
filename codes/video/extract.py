@@ -5,15 +5,17 @@ sys.path.append(os.getcwd())
 import argparse
 import subprocess
 from pathlib import Path
+
 import pandas as pd
+
+from codes.config import config, pattern
+from codes.config.pattern import camera_id_pattern, scenario_id_pattern
 from codes.video import extract
-from codes.config import config
-from codes.config import pattern
-from codes.config.pattern import scenario_id_pattern, camera_id_pattern
 
 
 def get_extract_path(cfg, row, target_suffix=".mp4") -> list[Path, Path]:
-    """_summary_
+    """
+    _summary_
 
     Args:
         cfg (_type_): _description_
@@ -25,7 +27,7 @@ def get_extract_path(cfg, row, target_suffix=".mp4") -> list[Path, Path]:
 
     Examples:
         from codes.video import extract
-        
+
         video, frame = extract.get_extract_path(cfg, row)
     """
     _video = cfg.path / cfg.videos / row.video_dir
@@ -35,13 +37,15 @@ def get_extract_path(cfg, row, target_suffix=".mp4") -> list[Path, Path]:
     return video, frame
 
 
-def extract_frames(in_video_path:str, output_folder:str) -> None:
-    """_summary_
+def extract_frames(in_video_path: str, output_folder: str) -> None:
+    """
+    _summary_
 
     Args:
         in_video_path (str): _description_
         output_folder (str): _description_
     """
+
     def get_ids(in_video_path):
         scenario_id = pattern.find(scenario_id_pattern, in_video_path)
         camera_id = pattern.find(camera_id_pattern, in_video_path)
