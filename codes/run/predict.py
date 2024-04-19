@@ -1,5 +1,5 @@
-from ultralytics import YOLO
 from codes.callback import callback
+from ultralytics import YOLO
 
 # Load a pretrained YOLOv8n model
 model = YOLO("yolov8n.pt")
