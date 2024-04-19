@@ -1,3 +1,4 @@
+from pathlib import Path
 import wandb
 
 
@@ -41,11 +42,16 @@ def print_boxes(Validator):
 
         model.add_callback("on_predict_postprocess_end", callback.print_boxes)
     """
-    boxes = Validator.results[0].boxes
-    for i in range(len(boxes)):
-        x1, y1, x2, y2 = boxes.xyxy[i].tolist()  # Extract coordinates
-        confidence = boxes.conf[i].item()  # Extract confidence
-        class_index = boxes.cls[i].item()  # Extract class index
-        print(
-            f"{int(x1):4d}, {int(y1):4d}, {int(x2):4d}, {int(y2):4d}, {confidence:.02f}, {int(class_index):2d}"
-        )
+
+    for camera_index, result in enumerate(Validator.results):
+        boxes = result.boxes
+        names = result.names
+        camera_name = Path(result.path).stem
+        for i in range(len(boxes)):
+            x1, y1, x2, y2 = boxes.xyxy[i].tolist()  # Extract coordinates
+            confidence = boxes.conf[i].item()  # Extract confidence
+            class_index = boxes.cls[i].item()  # Extract class index
+            class_name = names[class_index]
+            print(
+                f"{camera_index:2d}, {camera_name}, {int(x1):4d}, {int(y1):4d}, {int(x2):4d}, {int(y2):4d}, {confidence:.02f}, {class_name}"
+            )
