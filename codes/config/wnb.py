@@ -1,10 +1,12 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
 import wandb
-from ultralytics import YOLO
 from wandb.integration.ultralytics import add_wandb_callback
+
 from codes.callback import callback
+from ultralytics import YOLO
 
 # Step 1: Initialize a Weights & Biases run
 wandb.init(project="ultralytics", job_type="validation")
