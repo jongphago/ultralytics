@@ -9,7 +9,7 @@ from codes.config import config, pattern
 from codes.config.pattern import c_id_pattern, f_id_pattern, s_id_pattern
 
 
-def get_link_path(cfg: dict, dirpath: Path, _filename: str) -> list[Path, Path]:
+def get_link_path(cfg: dict, dirpath: Path, _filename: str, scale=False) -> list[Path, Path]:
     """
     _summary_
 
@@ -31,7 +31,10 @@ def get_link_path(cfg: dict, dirpath: Path, _filename: str) -> list[Path, Path]:
         filename = f"s{scenario_id}_c{camera_id}_f{int(frame_id) * fps:04d}.jpg"
         return filename
 
-    filename = scale_filename(_filename)
+    if scale:
+        filename = scale_filename(_filename)
+    else:
+        filename = _filename
     src = dirpath / _filename
     assert src.exists()
     dst = cfg.path / cfg.val / filename

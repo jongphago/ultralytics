@@ -89,7 +89,13 @@ def raw2cvt(raw, cfg):
     return cvt
 
 
-def cvt2dst(cvt, cfg, row):
+def cvt2dst(cvt, cfg, _=None):
+    dst = Path(cfg.path) / cfg.labels / cvt.stem
+    dst = dst.with_suffix(".txt")
+    return dst
+
+
+def _cvt2dst(cvt, cfg, row):
     scenario_id_pattern = r"(?<=시나리오)\d{2}"
     camera_id_pattern = r"(?<=카메라)\d{2}"
     frame_id_pattern = r"_(\d{4})."
@@ -179,7 +185,11 @@ def get_reorder(
 
     if objects is None:
         return None
-    class_col = objects[["label"]].apply(lambda x: value_dict[x[0]], axis=1).to_frame(name="class")
+    class_col = (
+        objects[["label"]]
+        .apply(lambda x: value_dict[x[0]], axis=1)
+        .to_frame(name="class")
+    )
     ccwh = xywh2ccwh(objects)
     joined = class_col.join(ccwh)
     reorder = joined[["class", "x", "y", "width", "height"]]

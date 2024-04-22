@@ -48,7 +48,20 @@ def write_videos_df(cfg, target_suffix=".avi") -> Path:
     return cfg.path / cfg.csv
 
 
-def get_iters(cfg):
+def get_iters(cfg: dict) -> map:
+    """_summary_
+
+    Args:
+        cfg (dict): _description_
+
+    Returns:
+        map: _description_
+    
+    Examples:
+        from codes.config import config
+
+        iters = config.get_iters(cfg)
+    """
     # videos_df
     videos_df = pd.read_csv(cfg.path / cfg.csv)
 

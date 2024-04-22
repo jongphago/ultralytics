@@ -1,5 +1,7 @@
 import os
+import re
 import sys
+import glob
 
 sys.path.append(os.getcwd())
 import argparse
@@ -37,7 +39,7 @@ def get_extract_path(cfg, row, target_suffix=".mp4") -> list[Path, Path]:
     return video, frame
 
 
-def extract_frames(in_video_path: str, output_folder: str) -> None:
+def extract_frames(in_video_path: str, output_folder: str, row: pd.Series) -> None:
     """
     _summary_
 
@@ -64,10 +66,20 @@ def extract_frames(in_video_path: str, output_folder: str) -> None:
         *("-f", "image2"),
         *("-vsync", "vfr"),
         # *("-t", "2"),
-        os.path.join(output_folder, f"s{scenario_id}_c{camera_id}_f%04d.jpg"),
+        os.path.join(
+            output_folder, row.format.format(int(scenario_id), int(camera_id), ".jpg")
+        ),
     ]
     print(command)
     subprocess.run(command)
+
+
+def rename_files(filename):
+    pattern = r"\d{4}"
+    replacement = lambda match: str(int(match.group()) * 23).zfill(4)
+    new_filename = re.sub(pattern, replacement, filename)
+    os.rename(filename, new_filename)  # 파일 이름 변경
+    print(f"Rename: \n\t{filename} -> \n\t{new_filename}")
 
 
 if __name__ == "__main__":
@@ -88,10 +100,14 @@ if __name__ == "__main__":
     # loop
     iters = config.get_iters(cfg)
     for row in iters:
-        video, frame = extract.get_extract_path(cfg, row)
+        video, frame = get_extract_path(cfg, row)
         print(f"{frame}")
         if frame.exists():
             continue
         os.makedirs(frame)
         print(f"Make directory: {frame}")
-        extract.extract_frames(video.as_posix(), frame.as_posix())
+        extract_frames(video.as_posix(), frame.as_posix(), row)
+        
+        # Rename
+        for filepath in sorted(glob.glob(str(frame / "*.jpg")), reverse=True):
+            rename_files(filepath)
