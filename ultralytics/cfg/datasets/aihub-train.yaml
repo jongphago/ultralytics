@@ -25,7 +25,7 @@ test: # test images (optional)
 
 # 
 csv: "aihub/1.Training/videos.csv"
-raw: "aihub/1.Training/원천데이터"
+raw: "aihub/1.Training/원천데이터"
 videos: "aihub/1.Training/videos"
 frames: "aihub/1.Training/frames"
 images: "aihub/1.Training/images"
