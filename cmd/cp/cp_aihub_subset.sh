@@ -1,0 +1,1 @@
+cp ultralytics/cfg/datasets/aihub-subset.yaml /opt/conda/envs/ultralytics/lib/python3.10/site-packages/ultralytics/cfg/datasets 

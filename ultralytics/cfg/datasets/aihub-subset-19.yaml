@@ -12,10 +12,6 @@ source:
         image: aihub/2.Validation/frames/시나리오19,
         label: aihub/2.Validation/converts/시나리오19,
       ],
-      [
-        image: aihub/2.Validation/frames/시나리오42,
-        label: aihub/2.Validation/converts/시나리오42,
-      ],
     ]
   val:
     [
