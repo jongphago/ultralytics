@@ -185,11 +185,7 @@ def get_reorder(
 
     if objects is None:
         return None
-    class_col = (
-        objects[["label"]]
-        .apply(lambda x: value_dict[x[0]], axis=1)
-        .to_frame(name="class")
-    )
+    class_col = objects[["label"]].apply(lambda x: value_dict[x[0]], axis=1).to_frame(name="class")
     ccwh = xywh2ccwh(objects)
     joined = class_col.join(ccwh)
     reorder = joined[["class", "x", "y", "width", "height"]]
