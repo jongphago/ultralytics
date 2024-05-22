@@ -127,7 +127,7 @@ def get_objects(lines: dict) -> pd.DataFrame | None:
     objects = pd.DataFrame(lines["objects"])
 
     # Exception
-    if objects.loc[0, "label"] == "void":
+    if objects.loc[0, "label"] in ["void", "blackout"]:
         return None
 
     # Flatten [position, attributes] columns
@@ -221,6 +221,7 @@ if __name__ == "__main__":
         help="config file name (e.g., 'aihub-val')",
     )
     args = parser.parse_args()
+    # args = Box({"config":"aihub-train"})
 
     # Config
     cfg_yaml_path = f"ultralytics/cfg/datasets/{args.config}.yaml"
