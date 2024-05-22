@@ -1,4 +1,5 @@
 from datetime import datetime
+
 import cv2
 import numpy as np
 from confluent_kafka import Consumer
@@ -8,9 +9,7 @@ def read_config():
     # reads the client configuration from client.properties
     # and returns it as a key-value map
     config = {}
-    with open(
-        "/home/jongphago/project/ultralytics/codes/kafka/client.properties"
-    ) as fh:
+    with open("/home/jongphago/project/ultralytics/codes/kafka/client.properties") as fh:
         for line in fh:
             line = line.strip()
             if len(line) != 0 and line[0] != "#":

@@ -1,8 +1,8 @@
 from datetime import datetime
 from http.client import CONTINUE
+
 import cv2
-from confluent_kafka import Producer, Consumer
-from confluent_kafka import KafkaError
+from confluent_kafka import Consumer, KafkaError, Producer
 
 
 def read_config():
