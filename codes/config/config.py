@@ -49,14 +49,15 @@ def write_videos_df(cfg, target_suffix=".avi") -> Path:
 
 
 def get_iters(cfg: dict) -> map:
-    """_summary_
+    """
+    _summary_
 
     Args:
         cfg (dict): _description_
 
     Returns:
         map: _description_
-    
+
     Examples:
         from codes.config import config
 

@@ -1,16 +1,20 @@
-import os, sys
+import os
+import sys
 
 sys.path.append(os.getcwd())
-from tqdm import tqdm
-import shutil
 import argparse
 import functools
+import shutil
+
 from box import Box
+from tqdm import tqdm
+
 from codes.config import config
 
 
 def merge_all_dicts(_pairs: list[list[dict, dict]]) -> list[dict]:
-    """_summary_
+    """
+    _summary_
 
     Args:
         _pairs (list[dict, dict]): _description_
@@ -31,7 +35,6 @@ def merge_all_dicts(_pairs: list[list[dict, dict]]) -> list[dict]:
           'label': 'aihub/2.Validation/converts/시나리오19'},
          {'image': 'aihub/2.Validation/frames/시나리오42',
           'label': 'aihub/2.Validation/converts/시나리오42'}]
-
     """
 
     def merge_dicts(dict1, dict2):
@@ -47,7 +50,8 @@ def merge_all_dicts(_pairs: list[list[dict, dict]]) -> list[dict]:
 
 
 def get_source_paths(cfg: dict, pair: dict) -> tuple[str, str]:
-    """_summary_
+    """
+    _summary_
 
     Args:
         cfg (dict): _description_
@@ -59,7 +63,6 @@ def get_source_paths(cfg: dict, pair: dict) -> tuple[str, str]:
     Examples:
         >>> sources = get_paths(cfg, pair, phase)
         >>> source_image_path, source_label_path = sources
-
     """
     source_image_path = cfg.path / pair.image
     source_label_path = cfg.path / pair.label
@@ -68,7 +71,8 @@ def get_source_paths(cfg: dict, pair: dict) -> tuple[str, str]:
 
 
 def get_target_paths(cfg: dict, phase: str) -> tuple[str, str]:
-    """_summary_
+    """
+    _summary_
 
     Args:
         cfg (dict): _description_
@@ -80,7 +84,6 @@ def get_target_paths(cfg: dict, phase: str) -> tuple[str, str]:
     Examples:
         >>> targets = get_paths(cfg, pair, phase)
         >>> target_image_path, target_label_path = targets
-
     """
     target_image_path = cfg.path / cfg[phase]
     target_label_path = cfg.path / cfg[phase].replace("images", "labels")
@@ -89,9 +92,7 @@ def get_target_paths(cfg: dict, phase: str) -> tuple[str, str]:
 
 # Remove existing directories
 # WARNING: This will remove directories if they exist
-def remove_existing_directories(
-    targets: tuple[str, str], is_image=True, is_label=True
-) -> None:
+def remove_existing_directories(targets: tuple[str, str], is_image=True, is_label=True) -> None:
     target_image_path, target_label_path = targets
     if is_image:
         shutil.rmtree(target_image_path) if target_image_path.exists() else None
@@ -111,7 +112,8 @@ def link_files(source_path, target_path: str, suffix: str) -> None:
 
 
 def link_subset(cfg: dict) -> None:
-    """_summary_
+    """
+    _summary_
 
     Args:
         cfg (dict): _description_
@@ -135,9 +137,7 @@ def link_subset(cfg: dict) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Link files")
-    parser.add_argument(
-        "--config", type=str, default="aihub-subset", help="config name"
-    )
+    parser.add_argument("--config", type=str, default="aihub-subset", help="config name")
     args = parser.parse_args()
     cfg = config.get_config(args.config)
     link_subset(cfg)

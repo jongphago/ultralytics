@@ -1,7 +1,7 @@
+import glob
 import os
 import re
 import sys
-import glob
 
 sys.path.append(os.getcwd())
 import argparse
@@ -66,9 +66,7 @@ def extract_frames(in_video_path: str, output_folder: str, row: pd.Series) -> No
         *("-f", "image2"),
         *("-vsync", "vfr"),
         # *("-t", "2"),
-        os.path.join(
-            output_folder, row.format.format(int(scenario_id), int(camera_id), ".jpg")
-        ),
+        os.path.join(output_folder, row.format.format(int(scenario_id), int(camera_id), ".jpg")),
     ]
     print(command)
     subprocess.run(command)
@@ -107,7 +105,7 @@ if __name__ == "__main__":
         os.makedirs(frame)
         print(f"Make directory: {frame}")
         extract_frames(video.as_posix(), frame.as_posix(), row)
-        
+
         # Rename
         for filepath in sorted(glob.glob(str(frame / "*.jpg")), reverse=True):
             rename_files(filepath)
