@@ -168,3 +168,5 @@ frames
 codes/**/*.ipynb
 !ultralytics/cfg/datasets/
 !datasets/aihub/**/videos.csv
+nohup.out
+images
