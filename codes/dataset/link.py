@@ -100,9 +100,14 @@ def remove_existing_directories(targets: tuple[str, str], is_image=True, is_labe
         shutil.rmtree(target_label_path) if target_label_path.exists() else None
 
 
-def link_files(source_path, target_path: str, suffix: str) -> None:
+def link_files(
+    source_path, target_path: str, suffix: str, filter_cams: list | None
+) -> None:
     pattern = f"**/*{suffix}"
-    paths = sorted(source_path.glob(pattern))
+    _paths = set(source_path.glob(pattern))
+    for cam in filter_cams:
+        _paths -= set(source_path.glob(f"**/{cam}/*{suffix}"))
+    paths = sorted(list(_paths))
     for src in tqdm(paths, desc=f"{source_path.stem} ({target_path.stem})"):
         dst = target_path / src.name
         if not dst.parent.exists():
@@ -131,8 +136,13 @@ def link_subset(cfg: dict) -> None:
             sources = get_source_paths(cfg, pair)
             source_image_path, source_label_path = sources
             target_image_path, target_label_path = targets
-            link_files(source_image_path, target_image_path, ".jpg")
-            link_files(source_label_path, target_label_path, ".txt")
+            filter_cams = (
+                cfg.filter[source_image_path.name]
+                if source_image_path.name in cfg.filter
+                else []
+            )
+            link_files(source_image_path, target_image_path, ".jpg", filter_cams)
+            link_files(source_label_path, target_label_path, ".txt", filter_cams)
 
 
 if __name__ == "__main__":
