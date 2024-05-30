@@ -100,9 +100,7 @@ def remove_existing_directories(targets: tuple[str, str], is_image=True, is_labe
         shutil.rmtree(target_label_path) if target_label_path.exists() else None
 
 
-def link_files(
-    source_path, target_path: str, suffix: str, filter_cams: list | None
-) -> None:
+def link_files(source_path, target_path: str, suffix: str, filter_cams: list | None) -> None:
     pattern = f"**/*{suffix}"
     _paths = set(source_path.glob(pattern))
     for cam in filter_cams:
@@ -136,11 +134,7 @@ def link_subset(cfg: dict) -> None:
             sources = get_source_paths(cfg, pair)
             source_image_path, source_label_path = sources
             target_image_path, target_label_path = targets
-            filter_cams = (
-                cfg.filter[source_image_path.name]
-                if source_image_path.name in cfg.filter
-                else []
-            )
+            filter_cams = cfg.filter[source_image_path.name] if source_image_path.name in cfg.filter else []
             link_files(source_image_path, target_image_path, ".jpg", filter_cams)
             link_files(source_label_path, target_label_path, ".txt", filter_cams)
 
