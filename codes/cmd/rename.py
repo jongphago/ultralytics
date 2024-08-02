@@ -1,6 +1,7 @@
-from pathlib import Path
-import glob
 import argparse
+import glob
+from pathlib import Path
+
 from box import Box
 
 parser = argparse.ArgumentParser(description="sum the integers at the command line")

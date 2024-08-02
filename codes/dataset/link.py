@@ -146,36 +146,13 @@ def link_subset(cfg: dict) -> None:
             sources = get_source_paths(cfg, pair)
             source_image_path, source_label_path = sources
             target_image_path, target_label_path = targets
-            if "filter" in cfg:
-                filter_cams = (
-                    cfg.filter[source_image_path.name]
-                    if source_image_path.name in cfg.filter
-                    else []
-                )
-            else:
-                filter_cams = []
-            num_images = link_files(
-                source_image_path, target_image_path, ".jpg", filter_cams
+            filter_cams = (
+                cfg.filter[source_image_path.name]
+                if source_image_path.name in cfg.filter
+                else []
             )
-            num_labels = link_files(
-                source_label_path, target_label_path, ".txt", filter_cams
-            )
-
-            # Dataset statistics: Count total number of images and labels
-            num_sub_total_images, num_sub_total_filtered_images = num_images
-            num_sub_total_labels, num_sub_total_filtered_labels = num_labels
-            num_total_images += num_sub_total_images
-            num_total_labels += num_sub_total_labels
-            num_total_filtered_images += num_sub_total_filtered_images
-            num_total_filtered_labels += num_sub_total_filtered_labels
-
-        # Print dataset statistics
-        print(
-            f"{phase}: Total images: {num_total_images} (Filtered: {num_total_filtered_images})"
-        )
-        print(
-            f"{phase}: Total labels: {num_total_labels} (Filtered: {num_total_filtered_labels})"
-        )
+            link_files(source_image_path, target_image_path, ".jpg", filter_cams)
+            link_files(source_label_path, target_label_path, ".txt", filter_cams)
 
 
 if __name__ == "__main__":
