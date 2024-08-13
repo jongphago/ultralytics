@@ -7,6 +7,7 @@ import json
 from io import BytesIO
 from typing import Union
 import cv2
+import torch
 import numpy as np
 from PIL import Image
 from ultralytics import YOLO
@@ -20,6 +21,11 @@ model = YOLO("yolov8n.pt")
 @app.get("/")
 def read_root():
     return {"Hello": "World"}
+
+
+@app.get("/is_cuda_available")
+async def is_available():
+    return {"torch.cuda.is_available": f"{torch.cuda.is_available()}"}
 
 
 @app.get("/items/{item_id}")
