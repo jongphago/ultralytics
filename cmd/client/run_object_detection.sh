@@ -1,0 +1,1 @@
+/opt/conda/envs/yolo/bin/python3 codes/deploy/client.py 
